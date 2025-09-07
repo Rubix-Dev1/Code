@@ -1,2 +1,2 @@
 # Hi!
-This is my GitHub page where my code organization and style is seen.
+This is RedGuyHatesHomework's GitHub page where my code organization and style is seen.
