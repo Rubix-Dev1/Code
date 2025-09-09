@@ -17,7 +17,7 @@ CreateDestroyPortal.OnServerEvent:Connect(function(player, command: string, rayc
 		portalPart.Position = raycastPos
 		
 		-- Edit their proximity prompt to show the portal's owner
-		portalPart.ProximityPrompt.ObjectText = {player.Name}.."'s portal"
+		portalPart.ProximityPrompt.ObjectText = player.Name.."'s portal"
 		
 		-- Give it the color it needs
 		local portalDecal: Decal = PortalImages[command.."Portal"]:Clone()
