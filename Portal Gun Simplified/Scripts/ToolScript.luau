@@ -1,8 +1,10 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CreateDestroyPortal = ReplicatedStorage.CreateDestroyPortal -- The remote event for creating and destroying portals
+local UserfulFunctions = require(ReplicatedStorage.UsefulFunctions) -- An asset made by me to shorten code (this will be seen later)
 
-local playerMouse = Players.LocalPlayer:GetMouse()
+local player = Players.LocalPlayer
+local playerMouse = player:GetMouse()
 
 local Tool = script.Parent
 local Raycaster = Tool.Part.Raycaster -- An attachment in front of the portal gun used for raycasting
@@ -10,9 +12,10 @@ local Raycaster = Tool.Part.Raycaster -- An attachment in front of the portal gu
 local PortalParts = workspace.PortalParts -- A folder containing the portals
 local Wall = workspace.Wall
 
+-- Fired when the portal gun is used
 Tool.Activated:Connect(function()
 	-- The amount of portals currently placed
-	local portals = #PortalParts:GetChildren()
+	local portals = #UserfulFunctions:GetChildrenWithTag(PortalParts, player.Name)
 	
 	-- If both portals are already placed, then destroy both of them
 	if portals == 2 then
