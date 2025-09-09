@@ -1,6 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CreateDestroyPortal = ReplicatedStorage.CreateDestroyPortal -- The remote event for detecting portal creation and destruction
-local UsefulFunctions = require(ReplicatedStorage.UsefulFunctions) -- An asset made by me to shorten code (this will be seen later)
+local UsefulFunctions = require(ReplicatedStorage.UsefulFunctions) -- An asset made by me to shorten code (this will be seen in "My Useful Functions")
 
 -- This is a type for the portal part (A BasePart with a proximity prompt and a portal image as their children)
 type PortalPart = BasePart & {ProximityPrompt: ProximityPrompt, PortalImage: Decal}
