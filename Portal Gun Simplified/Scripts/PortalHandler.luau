@@ -1,5 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CreateDestroyPortal = ReplicatedStorage.CreateDestroyPortal -- The remote event for detecting portal creation and destruction
+local UsefulFunctions = require(ReplicatedStorage.UsefulFunctions) -- An asset made by me to shorten code (this will be seen later)
 
 -- This is a type for the portal part (A BasePart with a proximity prompt and a portal image as their children)
 type PortalPart = BasePart & {ProximityPrompt: ProximityPrompt, PortalImage: Decal}
@@ -34,14 +35,7 @@ CreateDestroyPortal.OnServerEvent:Connect(function(player, command: string, rayc
 		-- If it was an orange portal, allow the player to teleport between them by enabling the scripts
 		if command == "Orange" then
 			-- Define the other portal part
-			local otherPortalPart: PortalPart? = nil
-			
-			for _, part in ipairs(PortalParts:GetChildren()) do
-				if part:HasTag(player.Name) and part ~= portalPart then
-					otherPortalPart = part
-					break
-				end
-			end
+			local otherPortalPart: PortalPart = UsefulFunctions:FindFirstChildWithTag(PortalParts, player.Name)
 			
 			-- Enable their scripts
 			portalPart:FindFirstChildWhichIsA("Script").Enabled = true
@@ -49,13 +43,10 @@ CreateDestroyPortal.OnServerEvent:Connect(function(player, command: string, rayc
 		end
 		
 	elseif command == "Destroy" then -- Otherwise, if both portals are to be destroyed, destroy them
-		-- Don't destroy them instantly to give time for the loop to pass
-		for _, portal in ipairs(PortalParts:GetChildren()) do
-			if portal:HasTag(player.Name) then
-				task.delay(0.05, function()
-					portal:Destroy()
-				end)
-			end
+		local playerPortals = UsefulFunctions:GetChildrenWithTag(PortalParts, player.Name)
+		
+		for _, portal in ipairs(playerPortals) do
+			portal:Destroy()
 		end
 		
 	else -- If the given command is not defined, throw a warning
