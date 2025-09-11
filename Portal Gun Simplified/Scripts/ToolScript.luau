@@ -1,7 +1,7 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CreateDestroyPortal = ReplicatedStorage.CreateDestroyPortal -- The remote event for creating and destroying portals
-local UserfulFunctions = require(ReplicatedStorage.UsefulFunctions) -- An asset made by me to shorten code (this will be seen in "My Useful Functions")
+local UserfulFunctions = require(ReplicatedStorage.UsefulFunctions) -- An asset made by me to shorten code (this will be seen later)
 
 local player = Players.LocalPlayer
 local playerMouse = player:GetMouse()
