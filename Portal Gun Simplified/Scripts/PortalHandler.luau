@@ -1,12 +1,13 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CreateDestroyPortal = ReplicatedStorage.CreateDestroyPortal -- The remote event for detecting portal creation and destruction
-local UsefulFunctions = require(ReplicatedStorage.UsefulFunctions) -- An asset made by me to shorten code (this will be seen later)
+local UsefulFunctions = require(ReplicatedStorage.UsefulFunctions) -- An asset made by me to shorten code (this will be seen in "My Useful Functions")
 
 -- This is a type for the portal part (A BasePart with a proximity prompt and a portal image as their children)
 type PortalPart = BasePart & {ProximityPrompt: ProximityPrompt, PortalImage: Decal}
 
 local Portal = ReplicatedStorage.Portal -- A basepart for showing the portal and interacting with it
 local PortalImages = ReplicatedStorage.PortalImages -- A folder which hold the images of the portals
+local PortalScripts = ReplicatedStorage.PortalScripts -- A folder which hold the scripts for the portals
 local PortalParts = workspace.PortalParts -- A folder which contains the portals
 
 -- Fired whenever a player interacts with their portal gun
@@ -23,37 +24,22 @@ CreateDestroyPortal.OnServerEvent:Connect(function(player, command: string, rayc
 		local portalDecal: Decal = PortalImages[command.."Portal"]:Clone()
 		portalDecal.Parent = portalPart
 		
+		-- Give it the script it needs
+		local portalScript: Script = PortalScripts[command.."PortalScript"]:Clone()
+		portalScript.Parent = portalPart
+		
 		-- Give it the player tag
 		portalPart:AddTag(player.Name)
 		portalPart.Parent = PortalParts
 		
-		-- If the portal created was orange, then do this:
+		-- If it was an orange portal, allow the player to teleport between them by enabling the scripts
 		if command == "Orange" then
 			-- Define the other portal part
-			local otherPortalPart: PortalPart = UsefulFunctions:GetChildrenWithTag(PortalParts, player.Name)
+			local otherPortalPart: PortalPart = UsefulFunctions:FindFirstChildWithTag(PortalParts, player.Name)
 			
-			for _, portal in ipairs(otherPortalPart) do
-				if portal ~= portalPart then
-					otherPortalPart = portal
-					break
-				end
-			end
-			
-			-- Enable their proximity prompts
-			portalPart.ProximityPrompt.Enabled = true
-			otherPortalPart.ProximityPrompt.Enabled = true
-			
-			-- If the portal part's proximity prompt got triggered, then teleport the player to the other portal part
-			portalPart.ProximityPrompt.Triggered:Connect(function(player)
-				local humanoidRootPart = player.Character.PrimaryPart
-				humanoidRootPart.CFrame = otherPortalPart.CFrame
-			end)
-			
-			-- If the other portal part's proximity prompt got triggered, then teleport the player to the portal part
-			otherPortalPart.ProximityPrompt.Triggered:Connect(function(player)
-				local humanoidRootPart = player.Character.PrimaryPart
-				humanoidRootPart.CFrame = portalPart.CFrame
-			end)
+			-- Enable their scripts
+			portalPart:FindFirstChildWhichIsA("Script").Enabled = true
+			otherPortalPart:FindFirstChildWhichIsA("Script").Enabled = true
 		end
 		
 	elseif command == "Destroy" then -- Otherwise, if both portals are to be destroyed, destroy them
