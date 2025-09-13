@@ -1,1 +1,0 @@
--- View this script in "My Useful Functions"
