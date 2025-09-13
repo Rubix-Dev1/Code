@@ -78,20 +78,41 @@ end
 -----[VARIATIONS OF ":GetChildren()"]-----
 
 -- returns a table of an instance's children with a specified tag
-function functions:GetChildrenWithTag(instance: Instance, tag: string): {Instance}
+function functions:GetChildrenWithTag(instance: Instance, ...: string): {Instance}
 	local children = {}
+	local hasTags = {}
+	
+	local tags = {...}
 	
 	for _, element: Instance in pairs(instance:GetChildren()) do
-		if element:HasTag(tag) then
-			table.insert(children, element)
+		for _, tag in ipairs(tags) do
+			table.insert(hasTags, element:HasTag(tag) or (#element:GetTags() == 0 and tag == "{notag}"))
 		end
+		
+		if #element:GetTags() == #tags then
+			local isTrue = false
+			
+			for _, truth in ipairs(hasTags) do
+				if not truth then
+					isTrue = false
+					break
+				else
+					isTrue = true
+				end
+			end
+			
+			if isTrue then
+				table.insert(children, element)
+			end
+		end
+		
+		table.clear(hasTags)
 	end
 	
 	return children
 end
 
 -- returns a table of an instance's children which are a specific type of object
--- aka if ":FindFirstChildWhichIsA()" and ":GetChildren()" had a baby 
 function functions:GetChildrenWhichAre(instance: Instance, className: string): {Instance}
 	local children = {}
 	
@@ -108,26 +129,71 @@ end
 
 -- returns a child which was first found in an instance with a specified tag
 -- (if such child doesn't exist, returns nil)
-function functions:FindFirstChildWithTag(instance: Instance, tag: string): Instance?
-	for _, element: Instance in ipairs(instance:GetChildren()) do
-		if element:HasTag(tag) then
-			return element
+function functions:FindFirstChildWithTag(instance: Instance, ...: string): Instance?
+	local hasTags = {}
+
+	local tags = {...}
+
+	for _, element: Instance in pairs(instance:GetChildren()) do
+		for _, tag in ipairs(tags) do
+			table.insert(hasTags, element:HasTag(tag) or (#element:GetTags() == 0 and tag == "{notag}"))
 		end
+
+		if #element:GetTags() == #tags then
+			local isTrue = false
+
+			for _, truth in ipairs(hasTags) do
+				if not truth then
+					isTrue = false
+					break
+				else
+					isTrue = true
+				end
+			end
+
+			if isTrue then
+				return element
+			end
+		end
+
+		table.clear(hasTags)
 	end
-	
+
 	return nil
 end
 
 -----[VARIATIONS OF ":GetDescendants()"]-----
 
 -- returns the descendants of an instance which have the specified tag
-function functions:GetDescendantsWithTag(instance: Instance, tag: string): {Instance}
+function functions:GetDescendantsWithTag(instance: Instance, ...: string): {Instance}
 	local descendants: {Instance} = {}
-	
-	for _, instance in pairs(instance:GetDescendants()) do
-		if instance:HasTag(tag) then
-			table.insert(descendants, instance)
+	local hasTags = {}
+
+	local tags = {...}
+
+	for _, element: Instance in pairs(instance:GetDescendants()) do
+		for _, tag in ipairs(tags) do
+			table.insert(hasTags, element:HasTag(tag) or (#element:GetTags() == 0 and tag == "{notag}"))
 		end
+
+		if #element:GetTags() == #tags then
+			local isTrue = false
+
+			for _, truth in ipairs(hasTags) do
+				if not truth then
+					isTrue = false
+					break
+				else
+					isTrue = true
+				end
+			end
+
+			if isTrue then
+				table.insert(descendants, element)
+			end
+		end
+
+		table.clear(hasTags)
 	end
 	
 	return descendants
@@ -150,7 +216,7 @@ end
 
 -- checks if the table is in a dictionary format
 function functions:IsADictionary(myTable: {any}): boolean
-	return not table.find(myTable, 1)
+	return not myTable[1]
 end
 
 -- removes a certain value from a table/dictionary (if done with a dictionary, must input the value's name)
