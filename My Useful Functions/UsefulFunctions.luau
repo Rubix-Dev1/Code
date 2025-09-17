@@ -43,38 +43,6 @@ function functions:Nor(condition1: bool, condition2: bool): boolean
 	end
 end
 
-function functions:Xor(condition1: bool, condition2: bool): boolean
-	if type(condition1) == "function" then
-		if type(condition2) == "function" then
-			return condition1() == condition2()
-		else
-			return condition1() == condition2
-		end
-	else
-		if type(condition2) == "function" then
-			return condition1 == condition2()
-		else
-			return condition1 == condition2
-		end
-	end
-end
-
-function functions:Xnor(condition1: bool, condition2: bool): boolean
-	if type(condition1) == "function" then
-		if type(condition2) == "function" then
-			return condition1() ~= condition2()
-		else
-			return condition1() ~= condition2
-		end
-	else
-		if type(condition2) == "function" then
-			return condition1 ~= condition2()
-		else
-			return condition1 ~= condition2
-		end
-	end
-end
-
 -----[VARIATIONS OF ":GetChildren()"]-----
 
 -- returns a table of an instance's children with a specified tag
